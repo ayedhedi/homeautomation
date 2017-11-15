@@ -1,7 +1,9 @@
 package lu.sgbt.tuto.ha.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,8 +41,7 @@ public class DeviceController {
         deviceFactory = new DeviceFactory();
     }
 
-
-    @RequestMapping
+    @GetMapping
     public List<DtoDevice> getAllDevices(){
         log.info("Looking for all devices ");
         List<DtoDevice> devices = deviceService.getAllDevices().stream()
@@ -51,7 +52,7 @@ public class DeviceController {
     }
 
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public DtoDevice getDeviceById(@PathVariable("id") long id) throws ResourceNotFoundException {
 
         log.info("Looking for device {}",id);
@@ -67,7 +68,7 @@ public class DeviceController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping
     public DtoDevice createOrUpdateDevice(@RequestBody DtoDevice device) throws ResourceNotFoundException {
         Device d;
 
