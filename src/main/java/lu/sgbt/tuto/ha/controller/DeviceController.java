@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
 import lu.sgbt.tuto.ha.domain.factory.DeviceFactory;
 import lu.sgbt.tuto.ha.domain.json.DtoDevice;
@@ -69,7 +71,10 @@ public class DeviceController {
     }
 
     @PutMapping
-    public DtoDevice createOrUpdateDevice(@RequestBody DtoDevice device) throws ResourceNotFoundException {
+    public DtoDevice createOrUpdateDevice(
+            @RequestBody DtoDevice device,
+            HttpServletResponse response) throws ResourceNotFoundException {
+
         Device d;
 
         if (device.getId() != null) {
@@ -78,6 +83,7 @@ public class DeviceController {
                 log.info("Update device {}",device.getId());
                 d = deviceFactory.buildDevice(device);
                 d = deviceService.updateDevice(d);
+                response.setStatus(HttpServletResponse.SC_ACCEPTED);
             }else {
                 log.warn("Cannot update device, unknown id = {}", device.getId());
                 throw new ResourceNotFoundException("Cannot found device with id = "+device.getId());
@@ -85,6 +91,7 @@ public class DeviceController {
         }else {
             log.info("Create new device");
             d = deviceService.createDevice(device);
+            response.setStatus(HttpServletResponse.SC_CREATED);
         }
 
         return deviceFactory.buildDevice(d);
